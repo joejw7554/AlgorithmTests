@@ -5,75 +5,46 @@
 
 using namespace std;
 
-// S: kê°œì˜ ì •ìˆ˜ë¡œ ì´ë£¨ì–´ì§„ ì§‘í•© (ì˜¤ë¦„ì°¨ìˆœ ì •ë ¬ë˜ì–´ ìˆìŒ)
-// k: ì§‘í•© Sì˜ í¬ê¸° (k > 6)
-// ë°˜í™˜ê°’: Sì—ì„œ 6ê°œë¥¼ ê³ ë¥´ëŠ” ëª¨ë“  ì¡°í•©ì„ 2ì°¨ì› ë²¡í„°ë¡œ ë°˜í™˜
+
+//https://www.acmicpc.net/problem/6603
 
 
-void MakeCombination(int K, vector<int>& Combination, vector<int>& SelectedNums, vector<bool>& Selected)
-{
-	
-	if (K > 5)
+void Backtrack(const vector<int>& S, int start, vector<int>& comb) {
+	// µğ¹ö±ë: ÇöÀç Á¶ÇÕ »óÅÂ Ãâ·Â
+	cout << "[DEBUG] comb: ";
+	for (int n : comb) cout << n << " ";
+	cout << "| start: " << start << "\n";
+
+	if (comb.size() == 6) 
 	{
-		sort(Combination.begin(), Combination.end());
-		for (const auto& Num : Combination)
-		{
-			cout << Num << " ";
-		}
-		cout << endl;
-
+		cout << "[RESULT] ";
+		for (int n : comb) cout << n << " ";
+		cout << "\n";
 		return;
 	}
 
-
-	for (int i = 0; i < 6; i++)
+	for (int i = start; i < S.size(); ++i)
 	{
-		if (Selected[i] == false)
-		{
-			Selected[i] = true;
-			Combination.push_back( SelectedNums[i]);
-			MakeCombination(K + 1, Combination, SelectedNums, Selected);
-			Selected[i] = false;
-
-			auto iter = find(Combination.begin(), Combination.end(), SelectedNums[i]);
-			if ( iter != Combination.end())
-			{
-				Combination.erase(iter);
-			}
-
-		}
+		cout << "[DEBUG] ¼±ÅÃ: " << S[i] << " (i=" << i << ")\n";
+		comb.push_back(S[i]);
+		Backtrack(S, i + 1, comb);
+		comb.pop_back();
 	}
 }
 
 
 void GetLottoCombinations(const vector<int>& S, int k)
 {
-	vector<int> SelectedNums;
-
-	while (SelectedNums.size() < k)
-	{
-		int RandomIndex = rand() % S.size();
-		int ChosenNumber = S[RandomIndex];
-		
-		if (find(SelectedNums.begin(), SelectedNums.end(), ChosenNumber)==SelectedNums.end())
-		{
-			SelectedNums.push_back(ChosenNumber);
-		}
-	}
-
 	vector<int> Combination;
-	vector<bool>Selected(k, false);
 
-	MakeCombination(0, Combination, SelectedNums, Selected);
+	Backtrack(S, 0, Combination);
 }
 
 int main()
 {
-
-	
 	vector<int> S = {1,2,3,5,8,13,21,34};
-	int k = 6;
+	int k = 8;
 	GetLottoCombinations(S, k);
-	// resultì—ëŠ” 28ê°œì˜ 6ê°œì§œë¦¬ ì¡°í•©ì´ ë“¤ì–´ìˆìŒ
+	// result¿¡´Â 28°³ÀÇ 6°³Â¥¸® Á¶ÇÕÀÌ µé¾îÀÖÀ½
 
 }
